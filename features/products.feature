@@ -41,9 +41,9 @@ Scenario: Create a Product
 
 Scenario: Read a product
     When I visit the "Home Page"
-    And I set the "Name" of product to "Hat"
-    And I click the "Search" button
-    Then I should see the "Success" message
+    And I set the "Name" to "Hat"
+    And I press the "Search" button
+    Then I should see the message "Success"
     When I copy the "Id" field
     And I press the "Clear" button
     And I paste the "Id" field
@@ -55,12 +55,12 @@ Scenario: Read a product
     And I should see "Cloths" in the "Category" dropdown
     And I should see "59.95" in the "Price" field
 
-Scenario: Update a product
+Scenario: Update a Product
     When I visit the "Home Page"
-    And I set the "Name" to "Hat"  
+    And I set the "Name" to "Hat"
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "a red fedora" in the "Description"
+    And I should see "A red fedora" in the "Description" field
     When I change "Name" to "Fedora"
     And I press the "Update" button
     Then I should see the message "Success"
