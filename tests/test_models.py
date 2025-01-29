@@ -27,7 +27,7 @@ import os
 import logging
 import unittest
 from decimal import Decimal
-from service.models import Product, Category, db
+from service.models import Product, Category, db, DataValidationError
 from service import app
 from tests.factories import ProductFactory
 
@@ -69,6 +69,13 @@ class TestProductModel(unittest.TestCase):
     ######################################################################
     #  T E S T   C A S E S
     ######################################################################
+
+    def test_serialize(self):
+        """It should test data validation error when product available type is not valid"""
+        product = ProductFactory()
+        product.serialize()
+        with self.assertRaises(DataValidationError):
+            product.deserialize(product)
 
     def test_create_a_product(self):
         """It should Create a product and assert that it exists"""
@@ -137,6 +144,22 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(len(products), 1)
         self.assertEqual(products[0].id, original_id)
         self.assertEqual(products[0].description, "testing")
+    
+    def test_update_with_invalid_id(self):
+        """It should raise error when updating product with invalid id"""
+        product = ProductFactory()
+        app.logger.info(f"product to create: {product}")
+        product.id = None
+        product.create()
+        app.logger.info(f"product created: {product}")
+        self.assertIsNotNone(product.id)
+        original_id = product.id
+        product.id = None
+        product.description = "testing"
+        with self.assertRaises(DataValidationError):
+            product.update()
+        
+
 
     def test_delete_a_product(self):
         """It should delete a product"""
