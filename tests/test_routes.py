@@ -195,6 +195,18 @@ class TestProductRoutes(TestCase):
         data = resp.get_json()
         self.assertEqual(data["description"], "testing2")
     
+    def test_update_product_without_id(self):
+        """It should not update a product without id"""
+        test_product = ProductFactory()
+        logging.debug("Test Product: %s", test_product.serialize())
+        response = self.client.post(BASE_URL, json=test_product.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # UPDATE THE PRODUCT
+        new_product = response.get_json()
+        new_product["id"] = 0
+        resp = self.client.put(f"{BASE_URL}/{new_product['id']}", json=new_product)        
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_delete_a_product(self):
         """It should delete a product"""
         products = self._create_products(5)
